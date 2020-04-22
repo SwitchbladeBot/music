@@ -1,0 +1,18 @@
+{
+  "main": "src/index.js",
+  "dependencies": {
+    "@sentry/node": "^5.15.4",
+    "erlpack": "^0.1.3",
+    "express": "^4.17.1",
+    "lavacord": "^1.1.7",
+    "node-fetch": "^2.6.0",
+    "zlib-sync": "^0.1.6"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.3"
+  },
+  "scripts": {
+    "start-dev": "nodemon --exec node -r dotenv/config src/index.js"
+  }
+}
