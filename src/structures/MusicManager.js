@@ -1,5 +1,8 @@
 const Client = require('./discord/Client')
 const LavacordManager = require('./lavacord/Manager')
+const MusicPlayer = require('./lavacord/MusicPlayer')
+const Song = require('./lavacord/Song')
+const APIController = require('./http/APIController')
 
 const fetch = require('node-fetch')
 const { URLSearchParams } = require('url')
@@ -8,16 +11,21 @@ const { promisify } = require('util')
 const { lookup } = require('dns')
 const dnsLookup = promisify(lookup)
 
+// TODO: Create SongProvider class
 class MusicManager {
-    constructor (clientOptions, lavacordOptions) {
+    constructor (clientOptions, lavacordOptions = {}) {
         this.clientOptions = clientOptions || {}
-        this.lavacordOptions = lavacordOptions || {}
+        this.lavacordOptions = Object.assign({
+            Player: MusicPlayer
+        }, lavacordOptions)
 
         this.handleClientError = this.handleClientError.bind(this)
     }
 
     connect () {
-        return this.connectClient().then(() => this.connectLavalink())
+        return this.connectClient()
+            .then(() => this.connectLavalink())
+            .then(() => this.startHTTPServer())
     }
 
     // Discord 
@@ -81,6 +89,12 @@ class MusicManager {
                 console.error(err)
                 return []
             })
+    }
+
+    // HTTP
+    startHTTPServer () {
+        this.api = new APIController(this)
+        return this.api.start(process.env.PORT)
     }
 }
 

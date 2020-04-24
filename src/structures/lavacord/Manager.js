@@ -8,7 +8,8 @@ module.exports = class Manager extends LavacordManager {
         this.user = client.userId
         this.send = packet => {
             const id = this.client.guildShardMap[packet.d.guild_id]
-            return this.client.shards.get(id).sendWS(packet.op, packet.d)
+            const shard = this.client.shards.get(id)
+            if (shard) return shard.sendWS(packet.op, packet.d)
         }
 
         client
