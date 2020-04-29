@@ -142,6 +142,9 @@ class Shard extends EventEmitter {
                 "device": "SwitchbladeMusic"
             }
         }
+        if(this.client.options.maxShards > 1) {
+            identify.shard = [this.id, this.client.options.maxShards];
+        }
         this.sendWS(GatewayOPCodes.IDENTIFY, identify)
     }
 
@@ -329,7 +332,7 @@ class Shard extends EventEmitter {
 
     onWSMessage(packet) {
         if(this.listeners("rawWS").length > 0 || this.client.listeners("rawWS").length) {
-            this.client.emit("rawWS", packet, this.id)
+            this.emit("rawWS", packet, this.id)
         }
 
         if(packet.s) {
@@ -426,7 +429,10 @@ class Shard extends EventEmitter {
     }
 
     emit(event, ...args) {
-        super.emit.call(this, event, ...args)
+        this.client.emit.call(this.client, event, ...args);
+        if(event !== "error" || this.listeners("error").length > 0) {
+            super.emit.call(this, event, ...args);
+        }
     }
 }
 
