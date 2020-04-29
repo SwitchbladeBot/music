@@ -1,62 +1,62 @@
 const { Player } = require('lavacord')
 
 class MusicPlayer extends Player {
-    constructor (node, id) {
-        super (node, id)
+  constructor (node, id) {
+    super(node, id)
 
-        this.song = null
+    this.song = null
 
-        this.volume = 25
-        this.paused = false
-        this.looping = false
+    this.volume = 25
+    this.paused = false
+    this.looping = false
 
-        this.previousVolume = null
-        this.bassboost = false
+    this.previousVolume = null
+    this.bassboost = false
 
-        this.queue = []
+    this.queue = []
 
-        this.registerListeners()
+    this.registerListeners()
+  }
+
+  play (song, forcePlay = false) {
+    if (this.playing && !forcePlay) {
+      this.queueSong(song)
+      return false
     }
 
-    play (song, forcePlay = false) {
-        if (this.playing && !forcePlay) {
-            this.queueSong(song)
-            return false
-        }
+    this.song = song
+    super.play(song.track, { volume: this.volume })
+    return true
+  }
 
-        this.song = song
-        super.play(song.track, { volume: this.volume })
-        return true
+  queueSong (song) {
+    this.queue.push(song)
+  }
+
+  next () {
+    if (this.looping) this.queueSong(this.playingSong)
+
+    const next = this.queue.shift()
+    if (next) {
+      this.play(next, true)
+      return next
     }
+    super.stop()
+  }
 
-    queueSong (song) {
-        this.queue.push(song)
-    }
+  registerListeners () {
+    this.on('end', ({ reason }) => {
+      if (reason !== 'STOPPED') {
+        if (reason === 'REPLACED') return
+        this.next()
+      }
+    })
 
-    next () {
-        if (this.looping) this.queueSong(this.playingSong)
-
-        const next = this.queue.shift()
-        if (next) {
-            this.play(next, true)
-            return next
-        }
-        super.stop()
-    }
-
-    registerListeners () {
-        this.on('end', ({ reason }) => {
-            if (reason !== 'STOPPED') {
-                if (reason === 'REPLACED') return
-                this.next()
-            }
-        })
-
-        this.on('stop', () => {
-            this.song = null
-            this.destroy()
-        })
-    }
+    this.on('stop', () => {
+      this.song = null
+      this.destroy()
+    })
+  }
 }
 
 module.exports = MusicPlayer
