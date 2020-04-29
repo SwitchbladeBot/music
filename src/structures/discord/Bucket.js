@@ -29,7 +29,8 @@ class Bucket {
     let val
     const tokensAvailable = this.tokens < this.tokenLimit
     const unreservedTokensAvailable = this.tokens < (this.tokenLimit - this.reservedTokens)
-    while (this._queue.length > 0 && (unreservedTokensAvailable || (tokensAvailable && this._queue[0].priority))) {
+    const checkAvailability = () => unreservedTokensAvailable || (tokensAvailable && this._queue[0].priority)
+    while (this._queue.length > 0 && checkAvailability()) {
       this.tokens++
       const item = this._queue.shift()
       val = this.latencyRef.latency - Date.now() + this.lastSend

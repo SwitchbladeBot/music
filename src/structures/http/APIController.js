@@ -83,7 +83,7 @@ class APIController {
       }
 
       // const song =
-      await player.play(song)
+      // await player.play(song)
 
       res.send()
     })
@@ -120,7 +120,7 @@ class APIController {
   }
 
   listen (port) {
-    return new Promise(r => this.app.listen(port, r))
+    return new Promise(resolve => this.app.listen(port, resolve))
   }
 }
 

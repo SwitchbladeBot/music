@@ -13,16 +13,7 @@ try {
   Erlpack = require('erlpack')
 } catch (err) {
 }
-let ZlibSync
-try {
-  ZlibSync = require('zlib-sync')
-} catch (err) {
-  try {
-    ZlibSync = require('pako')
-  } catch (err) {
-  }
-}
-const sleep = (ms) => new Promise((res) => setTimeout(res, ms))
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 class Client extends EventEmitter {
   constructor (token, options) {
@@ -54,7 +45,7 @@ class Client extends EventEmitter {
       this.options.ws = this.options.ws || {}
       this.options.ws.agent = this.options.agent
     }
-    if (this.options.hasOwnProperty('intents')) {
+    if (Object.prototype.hasOwnProperty.call(this.options, 'intents')) {
       // Resolve intents option to the proper integer
       if (Array.isArray(this.options.intents)) {
         let bitmask = 0
