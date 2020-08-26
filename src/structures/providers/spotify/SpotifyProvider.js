@@ -18,7 +18,7 @@ const PLAYLIST_REGEX = [
 
 class SpotifyProvider {
   static get (provider, identifier) {
-    return Promise.all([ this.getTrack, this.getAlbum, this.getPlaylist ].map(f => f(provider, identifier))).then(r => r.find(v => v))
+    return Promise.all([this.getTrack, this.getAlbum, this.getPlaylist].map(f => f(provider, identifier))).then(r => r.find(v => v))
   }
 
   static async getTrack (provider, identifier) {
@@ -47,12 +47,7 @@ class SpotifyProvider {
   static async fetchTrack (provider, track) {
     const video = await YoutubeAPI.getClosestMatch(`${track.artists.map(a => a.name).join(', ')} - ${track.name}`)
     if (video) {
-      try {
-        const [ song ] = await provider.loadTracks(video.id, (code, info) => new SpotifySong(code, info, track, video), true)
-        return song
-      } catch (e) {
-        console.error(e)
-      }
+      return provider.loadTracks(video.id, 1, (code, info) => new SpotifySong(code, info, track, video))
     }
   }
 }

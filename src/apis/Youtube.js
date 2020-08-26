@@ -53,7 +53,7 @@ class YoutubeAPI {
   static async request (endpoint, queryParams = {}) {
     const qParams = new URLSearchParams({ ...queryParams, key: process.env.YOUTUBE_API_KEY })
     return fetch(API_URL + endpoint + `?${qParams.toString()}`, {
-      headers: { 'Accept': 'application/json' }
+      headers: { Accept: 'application/json' }
     }).then(res => res.json())
   }
 }

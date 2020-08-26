@@ -4,14 +4,14 @@ const { URLSearchParams } = require('url')
 const Song = require('../lavacord/Song')
 
 const SpotifyProvider = require('./spotify/SpotifyProvider')
-const PROVIDERS = [ SpotifyProvider ]
+const PROVIDERS = [SpotifyProvider]
 
 class SongProvider {
   constructor (manager) {
     this.manager = manager
   }
 
-  loadTracks (identifier, songConstructor = Song, singleResult = false) {
+  loadTracks (identifier, limit = 1, songConstructor = Song) {
     const [node] = this.manager.lavalink.idealNodes
     const params = new URLSearchParams()
     params.append('identifier', identifier)
@@ -19,7 +19,7 @@ class SongProvider {
       .then(res => res.json())
       .then(({ exception, tracks }) => {
         if (exception) return Promise.reject(exception)
-        return (singleResult ? tracks.slice(0, 1) : tracks).map(({ track, info }) => songConstructor(track, info))
+        return tracks.slice(0, limit).map(({ track, info }) => songConstructor(track, info))
       })
       .catch(err => {
         console.error(err)

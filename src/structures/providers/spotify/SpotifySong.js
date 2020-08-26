@@ -1,4 +1,3 @@
-const SpotifyAPI = require("../../../apis/Spotify");
 const Song = require('../../lavacord/Song')
 
 class SpotifySong extends Song {

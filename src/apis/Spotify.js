@@ -69,7 +69,7 @@ class SpotifyAPI {
   }
 
   static async getToken () {
-    const grantPar = new URLSearchParams({ 'grant_type': 'client_credentials' })
+    const grantPar = new URLSearchParams({ grant_type: 'client_credentials' })
     const {
       access_token: accessToken,
       token_type: tokenType,
@@ -94,12 +94,12 @@ class SpotifyAPI {
 
   // Authorization Headers
   static get tokenHeaders () {
-    return this.token ? { 'Authorization': `${this.token.tokenType} ${this.token.accessToken}` } : {}
+    return this.token ? { Authorization: `${this.token.tokenType} ${this.token.accessToken}` } : {}
   }
 
   static get credentialHeaders () {
     const credential = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64')
-    return { 'Authorization': `Basic ${credential}`, 'Content-Type': 'application/x-www-form-urlencoded' }
+    return { Authorization: `Basic ${credential}`, 'Content-Type': 'application/x-www-form-urlencoded' }
   }
 }
 
