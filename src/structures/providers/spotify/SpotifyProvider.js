@@ -33,7 +33,11 @@ class SpotifyProvider {
   static async getAlbum (provider, identifier) {
     const albumResult = ALBUM_REGEX.map(r => r.exec(identifier)).find(r => r)
     if (albumResult) {
+      const [, id] = albumResult
+      const album = await SpotifyAPI.getAlbum(id)
+      if (album) {
 
+      }
     }
   }
 
@@ -47,7 +51,8 @@ class SpotifyProvider {
   static async fetchTrack (provider, track) {
     const video = await YoutubeAPI.getClosestMatch(`${track.artists.map(a => a.name).join(', ')} - ${track.name}`)
     if (video) {
-      return provider.loadTracks(video.id, 1, (code, info) => new SpotifySong(code, info, track, video))
+      const [song] = await provider.loadTracks(video.id, 1, (code, info) => new SpotifySong(code, info, track, video))
+      return song
     }
   }
 }

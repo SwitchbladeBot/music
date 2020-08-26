@@ -27,6 +27,10 @@ class SpotifySong extends Song {
   get source () {
     return 'spotify'
   }
+
+  fetchExtraInfo () {
+    return this.spotifyTrack
+  }
 }
 
 module.exports = SpotifySong

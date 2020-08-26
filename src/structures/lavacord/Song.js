@@ -54,6 +54,18 @@ class Song {
     return this.info.source
   }
 
+  // Methods
+  async fetchExtraInfo () {
+    switch (this.source) {
+      case 'youtube':
+        return {} // TODO: YoutubeAPI request
+      case 'soundcloud':
+        return {} // TODO: SoundcloudAPI request
+      default:
+        return {}
+    }
+  }
+
   // Static
   static from (track) {
     return new this(track, this.decodeTrack(track))

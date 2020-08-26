@@ -34,7 +34,7 @@ class SongProvider {
     } catch (e) {
       console.error(e)
     }
-    return alternativeLoad || this.loadTracks(identifier)
+    return alternativeLoad || this.loadTracks(identifier).then(tracks => tracks[0])
   }
 
   async alternativeLoad (identifier) {
