@@ -141,7 +141,7 @@ class Client extends EventEmitter {
         Authorization: this.token
       }
     }
-    return fetch('https://discordapp.com' + Constants.REST_BASE_URL + endpoint, options).then(res => res.json())
+    return fetch('https://discord.com' + Constants.REST_BASE_URL + endpoint, options).then(res => res.json())
   }
 }
 

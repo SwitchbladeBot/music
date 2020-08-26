@@ -1,8 +1,15 @@
-const b = 'QAAAgwIAI01laWFVbSAtIG9mIGNvdXJzZSBpIHN0aWxsIGxvdmUgeW91AAZNZWlhVW0AAAAAAAbd0AALZGpHdTJHNV9NS00AAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kakd1Mkc1X01LTQAHeW91dHViZQAAAAAAAAAA'
+const DataInput = require('../../utils/DataInput')
+
+const TRACK_INFO_VERSION = 2
+
 class Song {
   constructor (track, info) {
     this.track = track
     this.info = info
+
+    const decodedInfo = this.constructor.decodeTrack(track)
+    this.decodedInfo = decodedInfo // WIP
+    // TODO: Compare and merge decodedInfo and info
   }
 
   get title () {
@@ -35,18 +42,29 @@ class Song {
   }
 
   static decodeTrack (track) {
-    const info = {}
+    const data = new DataInput(Buffer.from(track, 'base64'))
 
-    const buf = Buffer.from(b, 'base64')
-    console.log(buf[0] & 0xFF)
-    console.log(buf.indexOf('MeiaUm'))
-    // title = 7
+    const messageFlag = data.readInt()
+    const realMessageLength = data.length - 4 // Total length - 4 (bytes read in the readInt() method)
+    if ((realMessageLength | 1 << 30) === messageFlag) { // Checks for TRACK_INFO_VERSIONED flag
+      const trackInfoVersion = data.read()
+      if (trackInfoVersion > TRACK_INFO_VERSION) {
+        throw new Error(`Invalid track info, supported track info version: ${TRACK_INFO_VERSION}`)
+      }
+    }
 
-    // TODO: Decode track
-    return info
+    return {
+      title: data.readUTF(),
+      author: data.readUTF(),
+      length: data.readLong(),
+      identifier: data.readUTF(),
+      isStream: data.readBoolean(),
+      uri: data.readBoolean() ? data.readUTF() : null, // Nullable
+      source: data.readUTF(),
+      // TODO: Support track factory details (? only local tracks use that)
+      position: data.readLong()
+    }
   }
 }
-
-Song.decodeTrack(b)
 
 module.exports = Song

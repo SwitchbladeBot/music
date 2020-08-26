@@ -1,6 +1,7 @@
 const Client = require('./discord/Client')
 const LavacordManager = require('./lavacord/Manager')
 const MusicPlayer = require('./lavacord/MusicPlayer')
+const Song = require('./lavacord/Song')
 const APIController = require('./http/APIController')
 
 const fetch = require('node-fetch')
@@ -83,7 +84,10 @@ class MusicManager {
     params.append('identifier', search)
     return fetch(`http://${node.host}:${node.port}/loadtracks?${params}`, { headers: { Authorization: node.password } })
       .then(res => res.json())
-      .then(data => data.tracks)
+      .then(({ exception, tracks }) => {
+        if (exception) return Promise.reject(exception)
+        return tracks.map(({ track, info }) => new Song(track, info))
+      })
       .catch(err => {
         console.error(err)
         return []
