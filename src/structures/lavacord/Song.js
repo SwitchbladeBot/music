@@ -7,18 +7,15 @@ const TRACK_INFO_VERSION = 2
 class Song {
   constructor (track, info) {
     this.track = track
-    this._rawInfo = info
 
+    this.info = info
     try {
       const decodedInfo = this.constructor.decodeTrack(track)
       Utils.compareProperties(info, decodedInfo, { ignoreExtraKeys: true })
-      this._decodedInfo = decodedInfo
+      this.info = { ...info, ...decodedInfo }
     } catch (e) {
       console.error(`Error parsing track code: ${e}`)
-      this._decodedInfo = {}
     }
-
-    this.info = { ...this._rawInfo, ...this._decodedInfo }
   }
 
   get title () {

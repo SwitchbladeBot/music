@@ -1,11 +1,8 @@
 const Client = require('./discord/Client')
 const LavacordManager = require('./lavacord/Manager')
 const MusicPlayer = require('./lavacord/MusicPlayer')
-const Song = require('./lavacord/Song')
+const SongProvider = require('./providers/SongProvider')
 const APIController = require('./http/APIController')
-
-const fetch = require('node-fetch')
-const { URLSearchParams } = require('url')
 
 const { promisify } = require('util')
 const { lookup } = require('dns')
@@ -19,6 +16,7 @@ class MusicManager {
       Player: MusicPlayer
     }, lavacordOptions)
 
+    this.songProvider = new SongProvider(this)
     this.handleClientError = this.handleClientError.bind(this)
   }
 
@@ -76,22 +74,6 @@ class MusicManager {
     }
 
     return lavalinkNodes
-  }
-
-  getSongs (search) {
-    const [node] = this.lavalink.idealNodes
-    const params = new URLSearchParams()
-    params.append('identifier', search)
-    return fetch(`http://${node.host}:${node.port}/loadtracks?${params}`, { headers: { Authorization: node.password } })
-      .then(res => res.json())
-      .then(({ exception, tracks }) => {
-        if (exception) return Promise.reject(exception)
-        return tracks.map(({ track, info }) => new Song(track, info))
-      })
-      .catch(err => {
-        console.error(err)
-        return []
-      })
   }
 
   // HTTP
