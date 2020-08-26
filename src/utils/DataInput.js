@@ -24,23 +24,20 @@ class DataInput {
 
   readUTF () {
     const length = this.readUnsignedShort() // 2 bytes
-    let i = 0
+    const target = this.offset + length
     let string = ''
-    while (i < length) {
+    while (this.offset < target) {
       const a = this.read()
-      if (a > 192) {
+      if (a >= 192) {
         const b = this.read()
-        if (a > 224) {
+        if (a >= 224) {
           const c = this.read()
           string += String.fromCodePoint(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F)) // 3 bytes char
-          i += 3
         } else {
           string += String.fromCodePoint(((a & 0x1F) << 6) | (b & 0x3F)) // 2 bytes char
-          i += 2
         }
       } else {
         string += String.fromCodePoint(a) // 1 byte char
-        i++
       }
     }
     return string
