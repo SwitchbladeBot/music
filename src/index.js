@@ -15,5 +15,5 @@ manager.connect().then(async () => {
   // console.log(song)
 
   await player.play(song)
-  player.once("error", error => console.error(error))
+  player.once('error', error => console.error(error))
 })
