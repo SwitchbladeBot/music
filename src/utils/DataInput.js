@@ -25,7 +25,7 @@ class DataInput {
   readUTF () {
     const length = this.readUnsignedShort() // 2 bytes
     let i = 0
-    let string = ""
+    let string = ''
     while (i < length) {
       const a = this.read()
       if (a > 192) {
@@ -35,7 +35,7 @@ class DataInput {
           string += String.fromCodePoint(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F)) // 3 bytes char
           i += 3
         } else {
-            string += String.fromCodePoint(((a & 0x1F) << 6) | (b & 0x3F)) // 2 bytes char
+          string += String.fromCodePoint(((a & 0x1F) << 6) | (b & 0x3F)) // 2 bytes char
           i += 2
         }
       } else {
