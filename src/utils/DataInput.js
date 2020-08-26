@@ -8,16 +8,14 @@ class DataInput {
     return this.buffer.length
   }
 
-  read () {
-    const value = this.buffer[this.offset]
-    this.offset++ // 1 byte
-    return value
+  read (len = 1, parseBytes = false) {
+    const bytes = [...this.buffer.slice(this.offset, this.offset + len).values()]
+    this.offset += len
+    return len === 1 ? bytes[0] : parseBytes ? bytes.reduce((acc, x, i) => ((x & 0xff) << (8 * (len - 1) - 8 * i)) | acc, 0) : bytes
   }
 
   readInt () {
-    const value = this.buffer.readInt32BE(this.offset) // 32 bits = 4 bytes
-    this.offset += 4 // 4 bytes
-    return value
+    return this.read(4, true)
   }
 
   readBoolean () {
@@ -29,11 +27,11 @@ class DataInput {
     let i = 0
     let string = ""
     while (i < length) {
-      const a = this.buffer[this.offset + i]
+      const a = this.read()
       if (a > 192) {
-        const b = this.buffer[this.offset + i + 1]
+        const b = this.read()
         if (a > 224) {
-          const c = this.buffer[this.offset + i + 2]
+          const c = this.read()
           string += String.fromCodePoint(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F)) // 3 bytes char
           i += 3
         } else {
@@ -45,21 +43,15 @@ class DataInput {
         i++
       }
     }
-    this.offset += length // 2 bytes + length (variable) bytes
     return string
   }
 
   readLong () {
-    const bytes = [...this.buffer.slice(this.offset, this.offset + 8).values()]
-    this.offset += 8 // 8 bytes
-    return bytes.reduce((acc, x, i) => ((x & 0xff) << (56 - 8 * i)) | acc)
+    return this.read(8, true)
   }
 
   readUnsignedShort () {
-    const a = this.buffer[this.offset]
-    const b = this.buffer[this.offset + 1]
-    this.offset += 2 // 2 bytes
-    return ((a & 0xff) << 8) | (b & 0xff)
+    return this.read(2, true)
   }
 }
 
