@@ -50,16 +50,9 @@ class DataInput {
   }
 
   readLong () {
-    const [ a, b, c, d, e, f, g, h ] = this.buffer.slice(this.offset, this.offset + 8)
+    const bytes = [...this.buffer.slice(this.offset, this.offset + 8).values()]
     this.offset += 8 // 8 bytes
-    return (((a & 0xff) << 56) |
-      ((b & 0xff) << 48) |
-      ((c & 0xff) << 40) |
-      ((d & 0xff) << 32) |
-      ((e & 0xff) << 24) |
-      ((f & 0xff) << 16) |
-      ((g & 0xff) <<  8) |
-      ((h & 0xff)))
+    return bytes.reduce((acc, x, i) => ((x & 0xff) << (56 - 8 * i)) | acc)
   }
 
   readUnsignedShort () {
