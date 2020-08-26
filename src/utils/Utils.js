@@ -1,7 +1,7 @@
 module.exports = {
   compareProperties (a, b, options = {}) {
     const comparedKeys = []
-    for (let [ key, value ] of Object.entries(a)) {
+    for (const [key, value] of Object.entries(a)) {
       const valueB = b[key]
       if (options.ignoreExtraKeys && (typeof value === 'undefined' || typeof valueB === 'undefined')) continue
       this.compare(value, valueB, key)
@@ -9,11 +9,11 @@ module.exports = {
     }
 
     if (!options.ignoreExtraKeys) {
-      for (let [ keyB, valueB] of Object.entries(b)) {
+      for (const [keyB, valueB] of Object.entries(b)) {
         if (comparedKeys.includes(keyB)) continue
         const valueA = a[keyB]
-        this.compare(value, valueB, keyB)
-        comparedKeys.push(key)
+        this.compare(valueA, valueB, keyB)
+        comparedKeys.push(keyB)
       }
     }
   },
