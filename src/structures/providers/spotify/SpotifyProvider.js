@@ -23,8 +23,8 @@ class SpotifyProvider {
       this.getAlbum,
       this.getPlaylist
     ]
-    .map(f => f(provider, identifier)))
-    .then(r => r.find(v => v)) // Find a valid match
+      .map(f => f(provider, identifier)))
+      .then(r => r.find(v => v)) // Find a valid match
   }
 
   static async getTrack (provider, identifier) {
