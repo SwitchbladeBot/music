@@ -1,6 +1,5 @@
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
-const fs = require('fs')
 
 const API_URL = 'https://opml.radiotime.com'
 const TUNEIN_URL = 'https://tunein.com/radio/'
