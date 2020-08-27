@@ -5,14 +5,18 @@ const TRACK_INFO_VERSIONED = 1
 const TRACK_INFO_VERSION = 2
 
 class Song {
-  constructor (track, info) {
+  constructor (track, info, provider) {
     this.track = track
-
     this.info = info
+    this.provider = provider
+
     try {
-      const decodedInfo = this.constructor.decodeTrack(track)
-      Utils.compareProperties(info, decodedInfo, { ignoreExtraKeys: true })
-      this.info = { ...info, ...decodedInfo }
+      if (track) {
+        const decodedInfo = this.constructor.decodeTrack(track)
+        console.log(info, decodedInfo)
+        Utils.compareProperties(info, decodedInfo, { ignoreExtraKeys: true })
+        this.info = { ...info, ...decodedInfo }
+      }
     } catch (e) {
       console.error(`Error parsing track code: ${e}`)
     }
@@ -64,6 +68,10 @@ class Song {
       default:
         return {}
     }
+  }
+
+  getCode () {
+    return this.track
   }
 
   // Static

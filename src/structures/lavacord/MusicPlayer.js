@@ -1,12 +1,15 @@
 const { Player } = require('lavacord')
 
+const Song = require('./Song')
+const Playlist = require('./Playlist')
+
 class MusicPlayer extends Player {
   constructor (node, id) {
     super(node, id)
 
     this.song = null
 
-    this.volume = 25
+    this.volume = 10
     this.paused = false
     this.looping = false
 
@@ -18,15 +21,33 @@ class MusicPlayer extends Player {
     this.registerListeners()
   }
 
-  play (song, forcePlay = false) {
+  async play (audio) {
+    if (audio instanceof Playlist) {
+      for (const song of audio.tracks) {
+        await this._play(song)
+      }
+    } else if (audio instanceof Song) {
+      this._play(audio)
+    } else {
+      throw new Error('Invalid audio track')
+    }
+  }
+
+  async _play (song, forcePlay = false) {
     if (this.playing && !forcePlay) {
       this.queueSong(song)
       return false
     }
 
-    this.song = song
-    super.play(song.track, { volume: this.volume })
-    return true
+    const songCode = await song.getCode()
+    console.log(songCode)
+    if (songCode) {
+      this.song = song
+      await super.play(songCode, { volume: this.volume })
+      return true
+    } else {
+      return this.next()
+    }
   }
 
   queueSong (song) {
@@ -38,7 +59,7 @@ class MusicPlayer extends Player {
 
     const next = this.queue.shift()
     if (next) {
-      this.play(next, true)
+      this._play(next, true)
       return next
     }
     super.stop()

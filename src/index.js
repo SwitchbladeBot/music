@@ -5,15 +5,19 @@ const MusicManager = require('./structures/MusicManager')
 
 const manager = new MusicManager()
 manager.connect().then(async () => {
-  const song = await manager.songProvider.get('https://open.spotify.com/track/1JYZf5oWWfEVLpl7HjMGiz?si=nl_uSrFHTCKwesCQQhQXpw') // ytsearch:girassol da cor do seu cabelo
+  const song = await manager.songProvider.get('https://tunein.com/radio/Rdio-Clube-FM-(Braslia)-1055-s126960/') // ytsearch:girassol da cor do seu cabelo
   const player = await manager.lavalink.join({
     guild: '445203868624748555',
     channel: '701928171519344801',
     node: '1'
   }, { selfdeaf: true })
 
-  // console.log(song)
+  console.log('Connected')
+  console.log(song)
 
-  await player.play(song)
-  player.once('error', error => console.error(error))
+  if (song) {
+    await player.play(song)
+    console.log(player.queue.map(s => s.title))
+    player.once('error', error => console.error(error))
+  }
 })

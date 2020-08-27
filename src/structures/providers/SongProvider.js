@@ -2,39 +2,57 @@ const fetch = require('node-fetch')
 const { URLSearchParams } = require('url')
 
 const Song = require('../lavacord/Song')
+const Playlist = require('../lavacord/Playlist')
 
+// Providers
 const SpotifyProvider = require('./spotify/SpotifyProvider')
-const PROVIDERS = [SpotifyProvider]
+const TuneInProvider = require('./tunein/TuneInProvider')
+const PROVIDERS = [SpotifyProvider, TuneInProvider]
 
 class SongProvider {
   constructor (manager) {
     this.manager = manager
   }
 
-  loadTracks (identifier, limit = 1, songConstructor = Song) {
+  loadTracks (identifier, limit) {
     const [node] = this.manager.lavalink.idealNodes
     const params = new URLSearchParams()
     params.append('identifier', identifier)
     return fetch(`http://${node.host}:${node.port}/loadtracks?${params}`, { headers: { Authorization: node.password } })
       .then(res => res.json())
-      .then(({ exception, tracks }) => {
-        if (exception) return Promise.reject(exception)
-        return tracks.slice(0, limit).map(({ track, info }) => songConstructor(track, info))
+      .then(res => {
+        if (res.exception) return Promise.reject(res.exception)
+        if (limit) res.tracks = res.tracks.slice(0, limit)
+        return res
       })
       .catch(err => {
         console.error(err)
-        return []
+        return {}
       })
   }
 
-  async get (identifier) {
+  async get (identifier, ignoreProviders = false) {
     let alternativeLoad
     try {
-      alternativeLoad = await this.alternativeLoad(identifier)
+      if (!ignoreProviders) alternativeLoad = await this.alternativeLoad(identifier)
     } catch (e) {
       console.error(e)
     }
-    return alternativeLoad || this.loadTracks(identifier).then(tracks => tracks[0])
+
+    return alternativeLoad || this.loadTracks(identifier).then(({ tracks, loadType, playlistInfo }) => {
+      if (!loadType) return
+      if (loadType === 'PLAYLIST_LOADED') {
+        // Load playlist
+        console.log(playlistInfo)
+        if (playlistInfo.selectedTrack !== -1) {
+          tracks = [...tracks.slice(playlistInfo.selectedTrack), ...tracks.slice(0, playlistInfo.selectedTrack)]
+        }
+        return new Playlist(tracks.map(({ track, info }) => new Song(track, info)), playlistInfo, this)
+      } else if (tracks.length) {
+        const [ { track, info } ] = tracks
+        return new Song(track, info)
+      }
+    })
   }
 
   async alternativeLoad (identifier) {
