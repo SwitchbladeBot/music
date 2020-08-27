@@ -17,7 +17,7 @@ class SpotifySong extends Song {
   }
 
   get length () {
-    return this.info.length
+    return super.length || this.spotifyTrack.duration_ms
   }
 
   get identifier () {

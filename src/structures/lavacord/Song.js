@@ -7,13 +7,14 @@ const TRACK_INFO_VERSION = 2
 class Song {
   constructor (track, info, provider) {
     this.track = track
-    this.info = info
+    this.info = info || {}
     this.provider = provider
 
     try {
       if (track) {
         const decodedInfo = this.constructor.decodeTrack(track)
         console.log(info, decodedInfo)
+        // TODO: Fix length/position in live streams
         Utils.compareProperties(info, decodedInfo, { ignoreExtraKeys: true })
         this.info = { ...info, ...decodedInfo }
       }

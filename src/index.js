@@ -5,7 +5,7 @@ const MusicManager = require('./structures/MusicManager')
 
 const manager = new MusicManager()
 manager.connect().then(async () => {
-  const song = await manager.songProvider.get('https://tunein.com/radio/Rdio-Clube-FM-(Braslia)-1055-s126960/') // ytsearch:girassol da cor do seu cabelo
+  const song = await manager.songProvider.get('https://tunein.com/radio/Rdio-Executiva-927-s97450/') // ytsearch:girassol da cor do seu cabelo
   const player = await manager.lavalink.join({
     guild: '445203868624748555',
     channel: '701928171519344801',
@@ -13,7 +13,7 @@ manager.connect().then(async () => {
   }, { selfdeaf: true })
 
   console.log('Connected')
-  console.log(song)
+  console.log(song.title)
 
   if (song) {
     await player.play(song)
