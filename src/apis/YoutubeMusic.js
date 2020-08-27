@@ -74,7 +74,7 @@ class YoutubeMusicAPI {
 
   // Internal
   static async request (endpoint, body) {
-    const [ key, name, version ] = await this.getKeys()
+    const [key, name, version] = await this.getKeys()
     const qParams = new URLSearchParams({ key, alt: 'json' })
     return fetch(API_URL + endpoint + `?${qParams.toString()}`, {
       method: 'POST',
@@ -102,8 +102,8 @@ class YoutubeMusicAPI {
     const [, key] = /INNERTUBE_API_KEY":"([0-9a-zA-Z_-]+?)"/ig.exec(body)
     const [, clientName] = /INNERTUBE_CONTEXT_CLIENT_NAME":([0-9]+?),/ig.exec(body)
     const [, clientVersion] = /INNERTUBE_CONTEXT_CLIENT_VERSION":"([0-9\\.]+?)"/ig.exec(body) || /INNERTUBE_CONTEXT_CLIENT_VERSION":"([0-9.]+?)"/ig.exec(body)
-    
-    this.keys = [ key, clientName, clientVersion ]
+
+    this.keys = [key, clientName, clientVersion]
     return this.keys
   }
 

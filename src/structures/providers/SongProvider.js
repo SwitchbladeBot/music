@@ -49,7 +49,7 @@ class SongProvider {
         }
         return new Playlist(tracks.map(({ track, info }) => new Song(track, info)), playlistInfo, this)
       } else if (tracks.length) {
-        const [ { track, info } ] = tracks
+        const [{ track, info }] = tracks
         return new Song(track, info)
       }
     })

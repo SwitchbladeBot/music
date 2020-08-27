@@ -45,7 +45,7 @@ class YoutubeAPI {
 
   static getBestThumbnail (thumbnails) {
     if (!thumbnails) return {}
-    return [ 'maxres', 'high', 'medium', 'standard', 'default' ].find(q => thumbnails[q])
+    return ['maxres', 'high', 'medium', 'standard', 'default'].find(q => thumbnails[q])
   }
 
   // Internal

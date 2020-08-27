@@ -4,7 +4,7 @@ const API_URL = 'https://opml.radiotime.com'
 
 class TuneInAPI {
   static get (id) {
-    return this.request('/Tune.ashx', { id }).then(({ body: [ result ]}) => result)
+    return this.request('/Tune.ashx', { id }).then(({ body: [result] }) => result)
   }
 
   // Internal

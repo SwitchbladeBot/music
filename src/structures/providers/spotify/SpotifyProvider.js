@@ -19,12 +19,12 @@ const PLAYLIST_REGEX = [
 class SpotifyProvider {
   static get (provider, identifier) {
     return Promise.all([
-        this.getTrack,
-        this.getAlbum,
-        this.getPlaylist
-      ]
-      .map(f => f(provider, identifier)))
-      .then(r => r.find(v => v)) // Find a valid match
+      this.getTrack,
+      this.getAlbum,
+      this.getPlaylist
+    ]
+    .map(f => f(provider, identifier)))
+    .then(r => r.find(v => v)) // Find a valid match
   }
 
   static async getTrack (provider, identifier) {
