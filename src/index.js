@@ -2,7 +2,6 @@ const Sentry = require('@sentry/node')
 Sentry.init({ dsn: process.env.SENTRY_DSN })
 
 const MusicManager = require('./structures/MusicManager')
-const iHeartAPI = require('./apis/iHeart')
 
 const manager = new MusicManager()
 manager.connect().then(async () => {
@@ -50,7 +49,7 @@ manager.connect().then(async () => {
   //     https://www.tidal.com/browse/playlist/1c5d01ed-4f05-40c4-bd28-0f73099e9648 ✓
 
   // iHeart
-  //   https://www.iheart.com/live/5479
+  //   https://www.iheart.com/live/5479 ✓
 
   if (song) {
     const player = await manager.lavalink.join({
