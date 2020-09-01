@@ -15,14 +15,14 @@ class APIController {
   async createRoutes (app) {
     // TODO: Auth
     app.get('/search', async (req, res) => {
-      const { identifier, playFirstResult, guildId, channelId } = req.query
+      const { identifier, guildId, channelId } = req.query
       if (!identifier) {
         return res.status(400).send({ error: 'Missing "identifier" query parameter.' })
       }
 
-      const songs = await this.manager.getSongs(identifier)
+      const song = await this.manager.songProvider.get(identifier)
       // TODO: Parse songs
-      if (playFirstResult) {
+      if (song) {
         if (!guildId) {
           return res.status(400).send({ error: 'Missing "guildId" query parameter.' })
         }
@@ -38,16 +38,10 @@ class APIController {
           }, { selfdeaf: true }) // TODO: Default options?
         }
 
-        const [song] = songs
-        if (song) {
-          player.play(song)
-          return res.send(song.asJSON())
-        }
-
-        return res.status(404).send({ error: 'nao achei nada meu patrão' })
+        player.play(song)
+        return res.send(song.asJSON())
       }
-
-      res.send(songs.map(song => song.asJSON()))
+      return res.status(404).send({ error: 'nao achei nada meu patrão' })
     })
 
     app.get('/playing', async (req, res) => {

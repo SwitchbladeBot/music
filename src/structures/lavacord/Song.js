@@ -74,7 +74,7 @@ class Song {
   }
 
   async getCode () {
-    if (this.track) return track
+    if (this.track) return this.track
     const video = await YoutubeMusicAPI.getClosestMatch(`${this.author} - ${this.title}`)
     if (video) {
       const { tracks } = await this.provider.loadTracks(video.id, 1)
@@ -97,8 +97,7 @@ class Song {
       isStream: this.stream,
       uri: this.uri,
       isSeekable: this.isSeekable,
-      source: this.source,
-      track: this.track
+      source: this.source
     }
   }
 

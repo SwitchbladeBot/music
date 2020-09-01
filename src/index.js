@@ -2,29 +2,41 @@ const Sentry = require('@sentry/node')
 Sentry.init({ dsn: process.env.SENTRY_DSN })
 
 const MusicManager = require('./structures/MusicManager')
+const iHeartAPI = require('./apis/iHeart')
 
 const manager = new MusicManager()
 manager.connect().then(async () => {
-  const song = await manager.songProvider.get('https://www.tidal.com/browse/playlist/1c5d01ed-4f05-40c4-bd28-0f73099e9648')
+  const song = await manager.songProvider.get('https://www.iheart.com/live/5479')
+  // LL Default search prefixes
   // ytsearch:girassol da cor do seu cabelo ✓
   // scsearch:wip
 
+  // Maybe implement custom search prefixes?
+
   // Youtube ✓
-  // https://www.youtube.com/watch?v=I7HahVwYpwo ✓
-  // https://www.youtube.com/playlist?list=PLT1zim-_E9NEHF7GfkgInhE_glOTcK9S- ✓
+  //   Track
+  //     https://www.youtube.com/watch?v=I7HahVwYpwo ✓
+  //   Playlist
+  //     https://www.youtube.com/playlist?list=PLT1zim-_E9NEHF7GfkgInhE_glOTcK9S- ✓
 
   // Spotify ✓
-  // https://open.spotify.com/track/1JYZf5oWWfEVLpl7HjMGiz ✓
-  // https://open.spotify.com/album/5FQ4sOGqRWUA5wO20AwPcO ✓
-  // https://open.spotify.com/playlist/37i9dQZF1DX3Sm4KTknxdH ✓
+  //   Track
+  //     https://open.spotify.com/track/1JYZf5oWWfEVLpl7HjMGiz ✓
+  //   Album
+  //     https://open.spotify.com/album/5FQ4sOGqRWUA5wO20AwPcO ✓
+  //   Playlist
+  //     https://open.spotify.com/playlist/37i9dQZF1DX3Sm4KTknxdH ✓
 
   // Deezer ✓
-  // https://www.deezer.com/en/track/943605532 ✓
-  // https://www.deezer.com/en/album/120712382 ✓
-  // https://www.deezer.com/en/playlist/5715041542 ✓
+  //   Track
+  //     https://www.deezer.com/en/track/943605532 ✓
+  //   Album
+  //     https://www.deezer.com/en/album/120712382 ✓
+  //   Playlist
+  //     https://www.deezer.com/en/playlist/5715041542 ✓
 
   // TuneIn
-  // https://tunein.com/radio/Rdio-Nova-Brasil-FM-(Braslia)-975-s151035/ ✓
+  //   https://tunein.com/radio/Rdio-Nova-Brasil-FM-(Braslia)-975-s151035/ ✓
 
   // Tidal
   //   Track
@@ -38,7 +50,7 @@ manager.connect().then(async () => {
   //     https://www.tidal.com/browse/playlist/1c5d01ed-4f05-40c4-bd28-0f73099e9648 ✓
 
   // iHeart
-  // https://www.iheart.com/live/5479
+  //   https://www.iheart.com/live/5479
 
   if (song) {
     const player = await manager.lavalink.join({

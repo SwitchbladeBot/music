@@ -40,7 +40,7 @@ class MusicPlayer extends Player {
     }
 
     const songCode = await song.getCode()
-    console.log(songCode)
+    // console.log(songCode)
     if (songCode) {
       this.song = song
       await super.play(songCode, { volume: this.volume })
