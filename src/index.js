@@ -5,7 +5,7 @@ const MusicManager = require('./structures/MusicManager')
 
 const manager = new MusicManager()
 manager.connect().then(async () => {
-  const song = await manager.songProvider.get('https://www.iheart.com/live/5479')
+  const song = await manager.songProvider.get('https://www.deezer.com/en/track/943605532')
   // LL Default search prefixes
   // ytsearch:girassol da cor do seu cabelo ✓
   // scsearch:wip

@@ -9,7 +9,7 @@ class MusicPlayer extends Player {
 
     this.song = null
 
-    this.volume = 10
+    this._volume = 10
     this.paused = false
     this.looping = false
 
@@ -43,7 +43,7 @@ class MusicPlayer extends Player {
     // console.log(songCode)
     if (songCode) {
       this.song = song
-      await super.play(songCode, { volume: this.volume })
+      await super.play(songCode, { volume: this._volume })
       return true
     } else {
       return this.next()

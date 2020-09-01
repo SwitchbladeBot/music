@@ -111,6 +111,27 @@ class APIController {
 
       res.send({ playing: player.song.asJSON(), queue: player.queue })
     })
+
+    app.get('/volume', async (req, res) => {
+      const { guildId, volume } = req.query
+      if (!guildId) {
+        return res.status(400).send({ error: 'Missing "guildId" query parameter.' })
+      }
+
+      const player = this.manager.lavalink.players.get(guildId)
+      if (!player || !player.playing) {
+        return res.status(400).send({ error: 'n to tocano porra' })
+      }
+
+      const nVolume = parseInt(volume)
+      if (isNaN(nVolume)) {
+        return res.status(400).send({ error: 'Missing "volume" query parameter.' })
+      }
+
+      player.volume(nVolume)
+
+      res.send({ ok: true, volume })
+    })
   }
 
   listen (port) {
