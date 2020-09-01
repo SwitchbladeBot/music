@@ -5,9 +5,10 @@ const Song = require('../lavacord/Song')
 const Playlist = require('../lavacord/Playlist')
 
 // Providers
+const DeezerProvider = require('./deezer/DeezerProvider')
 const SpotifyProvider = require('./spotify/SpotifyProvider')
 const TuneInProvider = require('./tunein/TuneInProvider')
-const PROVIDERS = [SpotifyProvider, TuneInProvider]
+const PROVIDERS = [DeezerProvider, SpotifyProvider, TuneInProvider]
 
 class SongProvider {
   constructor (manager) {

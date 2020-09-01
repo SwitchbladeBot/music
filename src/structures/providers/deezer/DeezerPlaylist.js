@@ -1,9 +1,9 @@
 const Playlist = require('../../lavacord/Playlist')
-const SpotifySong = require('./SpotifySong')
+const DeezerSong = require('./DeezerSong')
 
-class SpotifyPlaylist extends Playlist {
+class DeezerPlaylist extends Playlist {
   constructor (tracks, info, provider) {
-    super(tracks.map(({ track }) => new SpotifySong(track, provider)), info, provider)
+    super(tracks.map((track) => new DeezerSong(track, provider)), info, provider)
   }
 
   get title () {
@@ -19,4 +19,4 @@ class SpotifyPlaylist extends Playlist {
   }
 }
 
-module.exports = SpotifyPlaylist
+module.exports = DeezerPlaylist

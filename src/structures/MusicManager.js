@@ -1,14 +1,10 @@
 const Client = require('./discord/Client')
 const LavacordManager = require('./lavacord/Manager')
 const MusicPlayer = require('./lavacord/MusicPlayer')
+const NodePool = require('./lavacord/NodePool')
 const SongProvider = require('./providers/SongProvider')
 const APIController = require('./http/APIController')
 
-const { promisify } = require('util')
-const { lookup } = require('dns')
-const dnsLookup = promisify(lookup)
-
-// TODO: Create SongProvider class
 class MusicManager {
   constructor (clientOptions, lavacordOptions = {}) {
     this.clientOptions = clientOptions || {}
@@ -18,6 +14,12 @@ class MusicManager {
 
     this.songProvider = new SongProvider(this)
     this.handleClientError = this.handleClientError.bind(this)
+
+    this.nodePool = new NodePool()
+    this.nodePool.on('newNode', nodeOptions => {
+      const node = this.lavalink.createNode(nodeOptions)
+      node.connect()
+    })
   }
 
   connect () {
@@ -54,7 +56,7 @@ class MusicManager {
   async connectLavalink () {
     const nodes = await this.lavalinkNodes()
     this.lavalink = new LavacordManager(this.client, nodes, this.lavacordOptions)
-    return this.lavalink.connect()
+    return this.lavalink.connect().then(() => this.nodePool.startLookupService())
   }
 
   async lavalinkNodes () {
@@ -62,18 +64,7 @@ class MusicManager {
     try {
       lavalinkNodes = require.main.require('../lavalink_nodes.json')
     } catch (err) {}
-
-    if (!lavalinkNodes) {
-      const addresses = await dnsLookup('tasks.lavalink', { all: true })
-      lavalinkNodes = addresses.map((host, i) => ({
-        id: i++,
-        host,
-        port: process.env.LAVALINK_PORT,
-        password: process.env.LAVALINK_PASSWORD
-      }))
-    }
-
-    return lavalinkNodes
+    return lavalinkNodes || this.nodePool.getAllNodes()
   }
 
   // HTTP
