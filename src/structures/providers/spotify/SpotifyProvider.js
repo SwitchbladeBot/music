@@ -55,7 +55,7 @@ class SpotifyProvider {
       const playlist = await SpotifyAPI.getPlaylist(id)
       if (playlist) {
         const { items } = await SpotifyAPI.getPlaylistTracks(playlist.id)
-        return items ? new SpotifyPlaylist(items, playlist, provider) : undefined
+        return items ? new SpotifyPlaylist(items.map(i => i.track), playlist, provider) : undefined
       }
     }
   }

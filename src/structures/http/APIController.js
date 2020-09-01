@@ -41,13 +41,13 @@ class APIController {
         const [song] = songs
         if (song) {
           player.play(song)
-          return res.send(song)
+          return res.send(song.asJSON())
         }
 
         return res.status(404).send({ error: 'nao achei nada meu patrão' })
       }
 
-      res.send(songs)
+      res.send(songs.map(song => song.asJSON()))
     })
 
     app.get('/playing', async (req, res) => {
@@ -58,7 +58,7 @@ class APIController {
 
       const player = this.manager.lavalink.players.get(guildId)
       const song = player && player.song
-      res.send(song || {})
+      res.send(song ? song.asJSON() : {})
     })
 
     app.get('/play', async (req, res) => {
@@ -101,7 +101,7 @@ class APIController {
 
       const song = player.next()
 
-      res.send({ ok: true, song })
+      res.send({ ok: true, song: song ? song.asJSON() : null })
     })
 
     app.get('/queue', async (req, res) => {
@@ -115,7 +115,7 @@ class APIController {
         return res.status(400).send({ error: 'n to tocano porra' })
       }
 
-      res.send({ playing: player.song, queue: player.queue })
+      res.send({ playing: player.song.asJSON(), queue: player.queue })
     })
   }
 

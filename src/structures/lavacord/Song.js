@@ -1,6 +1,8 @@
 const DataInput = require('../../utils/DataInput')
 const Utils = require('../../utils/Utils')
 
+const YoutubeMusicAPI = require('../../apis/YoutubeMusic')
+
 const TRACK_INFO_VERSIONED = 1
 const TRACK_INFO_VERSION = 2
 
@@ -71,8 +73,33 @@ class Song {
     }
   }
 
-  getCode () {
-    return this.track
+  async getCode () {
+    if (this.track) return track
+    const video = await YoutubeMusicAPI.getClosestMatch(`${this.author} - ${this.title}`)
+    if (video) {
+      const { tracks } = await this.provider.loadTracks(video.id, 1)
+      if (tracks && tracks.length) {
+        const [{ track, info }] = tracks
+        console.log(info.identifier)
+        this.track = track
+        this.info = info
+        return track
+      }
+    }
+  }
+
+  asJSON () {
+    return {
+      title: this.title,
+      author: this.author,
+      length: this.length,
+      identifier: this.identifier,
+      isStream: this.stream,
+      uri: this.uri,
+      isSeekable: this.isSeekable,
+      source: this.source,
+      track: this.track
+    }
   }
 
   // Static

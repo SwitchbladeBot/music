@@ -9,7 +9,7 @@ class MusicManager {
   constructor (clientOptions, lavacordOptions = {}) {
     this.clientOptions = clientOptions || {}
     this.lavacordOptions = Object.assign({
-      Player: MusicPlayer
+      player: MusicPlayer
     }, lavacordOptions)
 
     this.songProvider = new SongProvider(this)
@@ -30,22 +30,28 @@ class MusicManager {
 
   // Discord
   connectClient () {
-    const CLUSTER_ID = process.env.INDEX_CLUSTER_ID_FROM_ONE ? parseInt(process.env.CLUSTER_ID) - 1 : parseInt(process.env.CLUSTER_ID)
-    const maxShards = parseInt(process.env.MAX_SHARDS)
-    const firstShardID = maxShards ? 0 : CLUSTER_ID * parseInt(process.env.SHARDS_PER_CLUSTER)
-    const lastShardID = maxShards ? maxShards - 1 : ((CLUSTER_ID + 1) * parseInt(process.env.SHARDS_PER_CLUSTER)) - 1
+    return new Promise((resolve, reject) => {
+      const CLUSTER_ID = process.env.INDEX_CLUSTER_ID_FROM_ONE ? parseInt(process.env.CLUSTER_ID) - 1 : parseInt(process.env.CLUSTER_ID)
+      const maxShards = parseInt(process.env.MAX_SHARDS)
+      const firstShardID = maxShards ? 0 : CLUSTER_ID * parseInt(process.env.SHARDS_PER_CLUSTER)
+      const lastShardID = maxShards ? maxShards - 1 : ((CLUSTER_ID + 1) * parseInt(process.env.SHARDS_PER_CLUSTER)) - 1
 
-    this.client = new Client(process.env.DISCORD_TOKEN, Object.assign({
-      compress: true,
-      userId: process.env.USER_ID,
-      firstShardID,
-      lastShardID,
-      maxShards: maxShards || parseInt(process.env.SHARDS_PER_CLUSTER) * parseInt(process.env.MAX_CLUSTERS)
-    }, this.clientOptions))
+      this.client = new Client(process.env.DISCORD_TOKEN, Object.assign({
+        compress: true,
+        userId: process.env.USER_ID,
+        firstShardID,
+        lastShardID,
+        maxShards: maxShards || parseInt(process.env.SHARDS_PER_CLUSTER) * parseInt(process.env.MAX_CLUSTERS)
+      }, this.clientOptions))
 
-    this.client.on('error', this.handleClientError)
+      this.client.on('error', e => {
+        this.handleClientError(e)
+        reject(e)
+      })
+      this.client.on('ready', resolve)
 
-    return this.client.connect()
+      this.client.connect()
+    })
   }
 
   handleClientError (...args) {

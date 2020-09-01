@@ -3,7 +3,7 @@ const SpotifySong = require('./SpotifySong')
 
 class SpotifyPlaylist extends Playlist {
   constructor (tracks, info, provider) {
-    super(tracks.map(({ track }) => new SpotifySong(track, provider)), info, provider)
+    super(tracks.map(track => new SpotifySong(track, provider)), info, provider)
   }
 
   get title () {

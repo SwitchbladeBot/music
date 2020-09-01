@@ -4,11 +4,7 @@ const { URLSearchParams } = require('url')
 const Song = require('../lavacord/Song')
 const Playlist = require('../lavacord/Playlist')
 
-// Providers
-const DeezerProvider = require('./deezer/DeezerProvider')
-const SpotifyProvider = require('./spotify/SpotifyProvider')
-const TuneInProvider = require('./tunein/TuneInProvider')
-const PROVIDERS = [DeezerProvider, SpotifyProvider, TuneInProvider]
+const Providers = require('./')
 
 class SongProvider {
   constructor (manager) {
@@ -23,6 +19,7 @@ class SongProvider {
       .then(res => res.json())
       .then(res => {
         if (res.exception) return Promise.reject(res.exception)
+        if (res.error) return Promise.reject(res)
         if (limit) res.tracks = res.tracks.slice(0, limit)
         return res
       })
@@ -57,7 +54,7 @@ class SongProvider {
   }
 
   async alternativeLoad (identifier) {
-    for (const provider of PROVIDERS) {
+    for (const provider of Providers) {
       const result = await provider.get(this, identifier)
       if (result) return result
     }

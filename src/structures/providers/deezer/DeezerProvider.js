@@ -23,7 +23,6 @@ class DeezerProvider {
     if (trackResult) {
       const [, id] = trackResult
       const track = await DeezerAPI.getTrack(id)
-      console.log(track)
       return track ? new DeezerSong(track, provider) : undefined
     }
   }
@@ -33,7 +32,6 @@ class DeezerProvider {
     if (albumResult) {
       const [, id] = albumResult
       const album = await DeezerAPI.getAlbum(id)
-      console.log(album)
       if (album) {
         const { tracks: { data } } = await album
         return data ? new DeezerPlaylist(data, album, provider) : undefined
@@ -46,7 +44,6 @@ class DeezerProvider {
     if (playlistResult) {
       const [, id] = playlistResult
       const playlist = await DeezerAPI.getPlaylist(id)
-      console.log(playlist)
       if (playlist) {
         const { tracks: { data } } = await playlist
         return data ? new DeezerPlaylist(data, playlist, provider) : undefined

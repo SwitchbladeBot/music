@@ -1,9 +1,9 @@
 const Playlist = require('../../lavacord/Playlist')
-const DeezerSong = require('./DeezerSong')
+const TidalSong = require('./TidalSong')
 
-class DeezerPlaylist extends Playlist {
+class TidalPlaylist extends Playlist {
   constructor (tracks, info, provider) {
-    super(tracks.map((track) => new DeezerSong(track, provider)), info, provider)
+    super(tracks.map(track => new TidalSong(track, provider)), info, provider)
   }
 
   get title () {
@@ -11,7 +11,7 @@ class DeezerPlaylist extends Playlist {
   }
 
   get source () {
-    return 'deezer'
+    return 'tidal'
   }
 
   fetchExtraInfo () {
@@ -19,4 +19,4 @@ class DeezerPlaylist extends Playlist {
   }
 }
 
-module.exports = DeezerPlaylist
+module.exports = TidalPlaylist

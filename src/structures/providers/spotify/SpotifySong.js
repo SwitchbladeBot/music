@@ -1,5 +1,4 @@
 const Song = require('../../lavacord/Song')
-const YoutubeMusicAPI = require('../../../apis/YoutubeMusic')
 
 class SpotifySong extends Song {
   constructor (spotifyTrack, provider) {
@@ -16,28 +15,12 @@ class SpotifySong extends Song {
     return this.spotifyTrack.artists.map(a => a.name).join(', ')
   }
 
-  get length () {
-    return super.length || this.spotifyTrack.duration_ms
-  }
-
   get identifier () {
     return this.spotifyTrack.id
   }
 
-  get stream () {
-    return super.isStream || false
-  }
-
   get uri () {
     return this.spotifyTrack.external_urls.spotify
-  }
-
-  get isSeekable () {
-    return typeof super.isSeekable === 'boolean' ? super.isSeekable : true
-  }
-
-  get position () {
-    return this.info.position || 0
   }
 
   get source () {
@@ -46,19 +29,6 @@ class SpotifySong extends Song {
 
   fetchExtraInfo () {
     return this.spotifyTrack
-  }
-
-  async getCode () {
-    if (this.trackCode) return this.trackCode
-    const video = await YoutubeMusicAPI.getClosestMatch(`${this.author} - ${this.title}`)
-    if (video) {
-      const { tracks } = await this.provider.loadTracks(video.id, 1)
-      if (tracks && tracks.length) {
-        const [{ track, info }] = tracks
-        this.info = info
-        return track
-      }
-    }
   }
 }
 
